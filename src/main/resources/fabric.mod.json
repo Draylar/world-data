@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "world-data",
+  "version": "${version}",
+  "name": "World Data",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/world-data/icon.png",
+  "environment": "*",
+  "mixins": [
+    "world-data.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*",
+    "minecraft": "1.17.1"
+  }
+}
