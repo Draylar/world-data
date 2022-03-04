@@ -9,4 +9,8 @@ public record WorldDataKey<T extends WorldData>(Identifier id, Function<ServerWo
     T create(ServerWorld world) {
         return supplier.apply(world);
     }
+
+    public T get(ServerWorld world) {
+        return WorldData.getData(world, this);
+    }
 }
