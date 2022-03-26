@@ -5,6 +5,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -71,8 +72,12 @@ public class WorldDataState extends PersistentState {
         return nbt;
     }
 
-    public static String nameFor(DimensionType dimension) {
-        return "worlddata" + dimension.getSuffix();
+    public static String nameFor(RegistryEntry<DimensionType> dimensionType) {
+        if (dimensionType.matchesKey(DimensionType.THE_END_REGISTRY_KEY)) {
+            return "worlddata_end";
+        }
+
+        return "worlddata";
     }
 
     /**

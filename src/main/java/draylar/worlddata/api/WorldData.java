@@ -41,8 +41,4 @@ public interface WorldData {
     static <T extends WorldData> T getData(ServerWorld world, WorldDataKey<T> key) {
         return ((WorldDataAccessor) world).postMateria_getWorldDataState().get(key);
     }
-
-//    default Self get(ServerWorld world) {
-//        return getData(world, this);
-//    }
 }
