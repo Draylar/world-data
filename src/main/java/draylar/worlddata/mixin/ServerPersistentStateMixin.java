@@ -13,6 +13,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.level.ServerWorldProperties;
@@ -34,27 +35,27 @@ public abstract class ServerPersistentStateMixin extends World implements WorldD
     @Shadow public abstract PersistentStateManager getPersistentStateManager();
     @Unique private WorldDataState state;
 
-    protected ServerPersistentStateMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed) {
-        super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed);
+    private ServerPersistentStateMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> dimension, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
+        super(properties, registryRef, dimension, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
     }
 
     @Inject(
             method = "<init>",
             at = @At("RETURN"))
-    private void initializeWorldDataProviders(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> worldKey, RegistryEntry<DimensionType> registryEntry, WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator, boolean debugWorld, long seed, List spawners, boolean shouldTickTime, CallbackInfo ci) {
+    private void initializeWorldDataProviders(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey worldKey, DimensionOptions dimensionOptions, WorldGenerationProgressListener worldGenerationProgressListener, boolean debugWorld, long seed, List spawners, boolean shouldTickTime, CallbackInfo ci) {
         state = getPersistentStateManager().getOrCreate(
                 compound -> WorldDataState.readNbt((ServerWorld) (Object) this, compound),
                 () -> new WorldDataState((ServerWorld) (Object) this),
-                WorldDataState.nameFor(registryEntry));
+                WorldDataState.nameFor(getDimensionEntry()));
 
         // Add State trackers based on "this" world's type.
         // The Overlord should always exist, so we use it to store 'global' (server-wide) data.
         // Register global data suppliers now.
-        if (worldKey == World.OVERWORLD) {
+        if(worldKey == World.OVERWORLD) {
             WorldDataRegistry.getGlobalSuppliers().forEach((key, supplier) -> {
 
                 // Only register the given key if it does not exist yet.
-                if (!state.getData().containsKey(key)) {
+                if(!state.getData().containsKey(key)) {
                     state.add((WorldDataKey) key, supplier.apply((ServerWorld) (Object) this));
                 }
             });
@@ -64,7 +65,7 @@ public abstract class ServerPersistentStateMixin extends World implements WorldD
         WorldDataRegistry.getWorldSuppliers().forEach((key, supplier) -> {
 
             // Only register the given key if it does not exist yet.
-            if (!state.getData().containsKey(key)) {
+            if(!state.getData().containsKey(key)) {
                 state.add((WorldDataKey) key, supplier.apply((ServerWorld) (Object) this));
             }
         });

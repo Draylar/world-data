@@ -8,6 +8,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.dimension.DimensionTypes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,11 +74,7 @@ public class WorldDataState extends PersistentState {
     }
 
     public static String nameFor(RegistryEntry<DimensionType> dimensionType) {
-        if (dimensionType.matchesKey(DimensionType.THE_END_REGISTRY_KEY)) {
-            return "worlddata_end";
-        }
-
-        return "worlddata";
+        return "worlddata" + (dimensionType.matchesKey(DimensionTypes.OVERWORLD) ? "" : dimensionType.getKey().get().getValue().getPath());
     }
 
     /**
