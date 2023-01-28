@@ -14,13 +14,13 @@ public class WorldDataRegistry {
     private static final Map<WorldDataKey<?>, Function<ServerWorld, WorldData>> GLOBAL_SUPPLIERS = new HashMap<>();
 
     public static <T extends WorldData> WorldDataKey<T> register(Identifier id, Function<ServerWorld, T> supplier) {
-        WorldDataKey<T> key = new WorldDataKey<>(id, supplier);
+        WorldDataKey<T> key = new WorldDataKey<>(id, supplier, false);
         WORLD_SUPPLIERS.put(key, (Function<ServerWorld, WorldData>) supplier);
         return key;
     }
 
     public static <T extends WorldData> WorldDataKey<T> registerGlobal(Identifier id, Function<ServerWorld, T> supplier) {
-        WorldDataKey<T> key = new WorldDataKey<>(id, supplier);
+        WorldDataKey<T> key = new WorldDataKey<>(id, supplier, true);
         GLOBAL_SUPPLIERS.put(key, (Function<ServerWorld, WorldData>) supplier);
         return key;
     }
