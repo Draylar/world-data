@@ -4,18 +4,17 @@ import draylar.worlddata.api.WorldDataKey;
 import draylar.worlddata.api.WorldDataRegistry;
 import draylar.worlddata.api.WorldDataState;
 import draylar.worlddata.impl.WorldDataAccessor;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.level.ServerWorldProperties;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,7 +41,20 @@ public abstract class ServerPersistentStateMixin extends World implements WorldD
     @Inject(
             method = "<init>",
             at = @At("RETURN"))
-    private void initializeWorldDataProviders(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey worldKey, DimensionOptions dimensionOptions, WorldGenerationProgressListener worldGenerationProgressListener, boolean debugWorld, long seed, List spawners, boolean shouldTickTime, CallbackInfo ci) {
+    private void initializeWorldDataProviders(
+            MinecraftServer server,
+            Executor workerExecutor,
+            LevelStorage.Session session,
+            ServerWorldProperties properties,
+            RegistryKey worldKey,
+            DimensionOptions dimensionOptions,
+            WorldGenerationProgressListener worldGenerationProgressListener,
+            boolean debugWorld,
+            long seed,
+            List spawners,
+            boolean shouldTickTime,
+            CallbackInfo ci
+    ) {
         state = getPersistentStateManager().getOrCreate(
                 compound -> WorldDataState.readNbt((ServerWorld) (Object) this, compound),
                 () -> new WorldDataState((ServerWorld) (Object) this),
@@ -73,7 +85,7 @@ public abstract class ServerPersistentStateMixin extends World implements WorldD
     }
 
     @Override
-    public WorldDataState postMateria_getWorldDataState() {
+    public WorldDataState worldData$getState() {
         return state;
     }
 }

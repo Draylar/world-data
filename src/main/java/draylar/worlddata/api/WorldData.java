@@ -31,14 +31,14 @@ public interface WorldData {
     World getWorld();
 
     default void markDirty() {
-        ((WorldDataAccessor) getWorld()).postMateria_getWorldDataState().markDirty();
+        ((WorldDataAccessor) getWorld()).worldData$getState().markDirty();
     }
 
     static <T extends WorldData> T getGlobalData(MinecraftServer server, WorldDataKey<T> key) {
-        return ((WorldDataAccessor) server.getWorld(World.OVERWORLD)).postMateria_getWorldDataState().get(key);
+        return ((WorldDataAccessor) server.getWorld(World.OVERWORLD)).worldData$getState().get(key);
     }
 
     static <T extends WorldData> T getData(ServerWorld world, WorldDataKey<T> key) {
-        return ((WorldDataAccessor) world).postMateria_getWorldDataState().get(key);
+        return ((WorldDataAccessor) world).worldData$getState().get(key);
     }
 }

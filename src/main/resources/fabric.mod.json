@@ -3,8 +3,10 @@
   "id": "world-data",
   "version": "${version}",
   "name": "World Data",
-  "description": "",
-  "authors": [],
+  "description": "Wrapper API for Persistent State",
+  "authors": [
+    "Draylar"
+  ],
   "contact": {},
   "license": "MIT",
   "icon": "assets/world-data/icon.png",
@@ -15,6 +17,6 @@
   "depends": {
     "fabricloader": "*",
     "fabric": "*",
-    "minecraft": ">=1.18"
+    "minecraft": ">=1.19.3"
   }
 }
